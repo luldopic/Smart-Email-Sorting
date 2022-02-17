@@ -3,13 +3,16 @@
 
 
 import imaplib
+import json
  
-class imap:
- 
-    def __init__ (self, username, password):
+class gmail:
+    def __init__ (self):
+        credentialsJSON = "credentialsGoogle.json"
+        with open(credentialsJSON) as handler:
+            credentials = json.load(handler)
         self.imap_server = imaplib.IMAP4_SSL("imap.gmail.com")
-        self.username = username
-        self.password = password
+        self.username = credentials["user"]
+        self.password = credentials["password"]
         self.loggedIn = False
  
         self.mailboxes = mailboxes(self.imap_server);
@@ -43,8 +46,6 @@ class mailboxes:
  
     def __getitem__(self, key): return self.mailboxes[key]
 
-
-class messages:
     def __init__(self):
         pass
     def __init__(self, gmail_server):

@@ -12,24 +12,30 @@ import AppFrame
 
 
 class App(tk.Tk):
-    def __init__(self,root):
+    def __init__(self):
         super().__init__()
-        root.title("Email Sorting")
+        self.title("Smart Email Sorting")
         width = 900
         height = 600
-        screenwidth = root.winfo_screenwidth()
-        screenheight = root.winfo_screenheight()
+        screenwidth = self.winfo_screenwidth()
+        screenheight = self.winfo_screenheight()
         alignstr = '%dx%d+%d+%d' % (width, height, (screenwidth - width) / 2, (screenheight - height) / 2)
-        root.geometry(alignstr)
-        root.resizable(width=False, height=False)
+        self.geometry(alignstr)
+        self.resizable(width=False, height=False)
+
+        self.columnconfigure(0, weight=4)
+        self.columnconfigure(1, weight=1)
+        self.initFrame()
+    
+    def initFrame(self):
+        buttonFrame = AppFrame.TopbuttonFrame(self)
+        buttonFrame.grid(column = 0, row = 0)
         
-    
-    def getMail(self):
-        credentialsJSON = "credentialsGoogle.json"
-        with open(credentialsJSON) as handler:
-            credentials = json.load(handler)
-        mail = imap_gmail.imap(credentials["user"], credentials["password"])
-    
+        mainFrame = AppFrame.mailboxFrame(self)
+        mainFrame.grid(column = 0, row = 0)
+        
+        
+        
 if __name__ == '__main__':
     app = App()
     app.mainloop()
