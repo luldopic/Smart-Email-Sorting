@@ -7,19 +7,18 @@ import json
  
 class gmail:
     def __init__ (self):
-        credentialsJSON = "credentialsGoogle.json"
-        with open(credentialsJSON) as handler:
-            credentials = json.load(handler)
         self.imap_server = imaplib.IMAP4_SSL("imap.gmail.com")
-        self.username = credentials["user"]
-        self.password = credentials["password"]
         self.loggedIn = False
  
         self.mailboxes = mailboxes(self.imap_server);
  
     def login (self):
-        self.imap_server.login(self.username,self.password)
-        self.loggedIn = True
+        credentialsJSON = "credentialsGoogle.json"
+        with open(credentialsJSON) as handler:
+            credentials = json.load(handler)
+        result = self.imap_server.login(credentials["user"],credentials["password"])
+        if result[0] == 'OK':
+            self.loggedIn = True
  
     def logout (self):
         self.imap_server.close()

@@ -6,7 +6,6 @@ Primary Email Sorting Interface
 """
 
 import tkinter as tk
-import json
 import imap_gmail
 import AppFrame
 
