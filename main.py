@@ -24,12 +24,26 @@ class sortingFrame(ttk.Frame):
         super().__init__(container)
         self.columnconfigure(0, weight=1)
         self.__create_widget()
-    def __create_widget(self):
+    def __create_widgets(self):
         Actionable = tk.StringVar(self) #Actionable vs Non-actionable
+        Actionable.set("Actionable")
         Urgency = tk.StringVar(self) #High(1-2 day) vs Medium(3-7 days) vs Low (>7 days)
+        Urgency.set("Medium (3-7 days)")
         Purpose = tk.StringVar(self) #Personal vs Business
-        Action = tk.StringVar(self) #Archived vs Deleted
+        Purpose.set("Business")
+        Action = tk.StringVar(self) #Labelled vs Deleted
+        Action.set("Labelled")
         
+        paddings = {'padx': 5, 'pady':5}
+        
+        Actionable_Menu = ttk.OptionMenu(self, Actionable, "Actionable", "Non-actionable")
+        Actionable_Menu.pack(**paddings)
+        Urgency_Menu = ttk.OptionMenu(self, Actionable, "High(1-2 days)", "Medium(3-7 days)","Low(>7 days)")
+        Urgency_Menu.pack(**paddings)
+        Purpose_Menu = ttk.OptionMenu(self, Actionable, "Personal", "Business")
+        Purpose_Menu.pack(**paddings)
+        Action_Menu = ttk.OptionMenu(self, Actionable, "To label", "To delete")
+        Action_Menu.pack(**paddings)
 
 class TopbuttonFrame(ttk.Frame):
     def __init__(self, container):
