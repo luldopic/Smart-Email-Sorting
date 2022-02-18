@@ -28,6 +28,7 @@ class gmail:
 
 class mailboxes:
     def __init__(self, gmail_server):
+        super.__init__(self)
         self.server = gmail_server
         self.mailboxes = list()
  
