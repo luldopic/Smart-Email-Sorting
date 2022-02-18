@@ -7,6 +7,11 @@ Created on Thu Feb 17 18:45:38 2022
 import tkinter as tk
 from tkinter import ttk
 
+class mainFrame(ttk.Frame):
+    def __init__(self, container):
+        super.__init__(container)
+        
+
 class mailboxFrame(ttk.Frame):
     def __init__(self, container):
         super().__init__(container)
