@@ -1,5 +1,4 @@
 # imap_gmail.py
-# From: https://verpa.wordpress.com/2010/01/23/python-gmail-imap-part-1/
 
 
 import imaplib
@@ -9,25 +8,31 @@ class gmail:
     def __init__(self):
         super().__init__(self)
         self.loggedIn = False
-        self.mailboxlist = self.list();
  
     def login (self):
-        credentialsJSON = "credentialsGoogle.json"
-        with open(credentialsJSON) as handler:
-            credentials = json.load(handler)
-        result = self.imap_server.login(credentials["user"],credentials["password"])
-        if result[0] == 'OK':
-            self.loggedIn = True
- 
+        while loggedIn == False:
+            try:
+                credentialsJSON = "credentialsGoogle.json"
+                with open(credentialsJSON) as handler:
+                    credentials = json.load(handler)
+                result = self.imap_server.login(credentials["user"],credentials["password"])
+                if result[0] == 'OK':
+                    self.loggedIn = True
+            except:
+                print("Log in Failed")
+         
     def logout (self):
         self.imap_server.close()
         self.imap_server.logout()
         self.loggedIn = False
     
+    def get_all_mailboxes(self):
+        self.AllMailboxes = mailboxes()
+        for mailbox in 
+    
 
 class mailboxes:
-    def __init__(self, gmail_server):
-        self.server = gmail_server
+    def __init__(self, **name):
         self.mailboxes = list()
  
     def load(self):
