@@ -6,8 +6,18 @@ import json
 
 class gmail(imaplib.IMAP4_SSL):
     def __init__(self):
-        super().__init__("imap.gmail.com")
+        self.connectToGmail()
         self.loggedIn = False
+ 
+    def connectToGmail(self):
+        handshake = False
+        while handshake == False:
+            try:
+                super().__init__("imap.gmail.com")
+                handshake = True
+                print("Handshake Succeed")
+            except:
+                print("Handshake Failed")
  
     def login (self):
         while self.loggedIn == False:
@@ -44,14 +54,3 @@ class mailboxes:
  
     def __getitem__(self, key): return self.mailboxes[key]
 
-def connectToGmail():
-    handshake = False
-    while handshake == False:
-        try:
-            server = gmail()
-            handshake = True
-            print("Handshake Succeed")
-            return server
-            
-        except:
-            print("Handshake Failed")
