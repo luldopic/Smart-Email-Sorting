@@ -1,4 +1,4 @@
-# imap_gmail.py
+# Connect to imap_gmail.py
 
 
 import imaplib
