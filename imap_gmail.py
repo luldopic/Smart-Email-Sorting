@@ -28,15 +28,22 @@ class gmail(imaplib.IMAP4_SSL):
                 result = super().login(credentials["user"],credentials["password"])
                 if result[0] == 'OK':
                     self.loggedIn = True
+                    print("Log in Succeed")
             except:
                 print("Log in Failed")
          
     def logout (self):
-        self.close()
-        super().logout()
-        self.loggedIn = False
+        try:
+            self.close()
+        except:
+            pass
+        finally:
+            super().logout()
+            self.loggedIn = False
     
-    def get_all_mail(self): return mailboxes("[Gmail]/All Mail")
+    def __get_mailfromInbox__(self):
+        self.select('Inbox')
+        
 
 class mailboxes:
     def __init__(self, **name):
