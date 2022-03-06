@@ -2,3 +2,4 @@ credentialsGoogle.json
 credentialsGoogleAPI.json
 test.py
 /__pycache__
+getcredentials.py
