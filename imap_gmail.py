@@ -1,10 +1,10 @@
 # Connect to imap_gmail.py
 
 
-import imaplib
+from imap_tools import MailBox, AND, OR, NOT
 import json
 
-class gmail(imaplib.IMAP4_SSL):
+class gmail(MailBox):
     def __init__(self):
         self.connectToGmail()
         self.loggedIn = False
@@ -25,10 +25,9 @@ class gmail(imaplib.IMAP4_SSL):
                 credentialsJSON = "credentialsGoogle.json"
                 with open(credentialsJSON) as handler:
                     credentials = json.load(handler)
-                result = super().login(credentials["user"],credentials["password"])
-                if result[0] == 'OK':
-                    self.loggedIn = True
-                    print("Log in Succeed")
+                super().login(credentials["user"],credentials["password"])
+                self.loggedIn = True
+                print("Log in Succeed")
             except:
                 print("Log in Failed")
          
@@ -42,22 +41,6 @@ class gmail(imaplib.IMAP4_SSL):
             self.loggedIn = False
     
     def __get_mailfromInbox__(self):
-        self.select('Inbox')
+        self.folder.set('Inbox')
         
-
-class mailboxes:
-    def __init__(self, **name):
-        self.mailboxes = list(name)
-        self.name = name
- 
-    def load(self):
-        if(not self.server.loggedIn):
-            self.server.login()
- 
-        for box in self.server.imap_server.list()[1]:  #Ugly
-            name = box.split(' "/" ')[1][1:-1]
-            if( name != "[Gmail]"):  #ignore global [Gmail] mailbox
-                self.mailboxes.append(name)
- 
-    def __getitem__(self, key): return self.mailboxes[key]
 
