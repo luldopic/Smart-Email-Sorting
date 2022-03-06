@@ -3,3 +3,4 @@ credentialsGoogleAPI.json
 test.py
 /__pycache__
 getcredentials.py
+LocalEmailDB.accdb
