@@ -1,8 +1,9 @@
 # Connect to Gmail Server and Fetch Mail
 
 
-from imap_tools import MailBox, AND, OR, NOT
+from imap_tools import MailBox
 import json
+
 
 class gmail(MailBox):
     def __init__(self):
@@ -11,7 +12,7 @@ class gmail(MailBox):
  
     def connectToGmail(self):
         handshake = False
-        while handshake == False:
+        while handshake != True:
             try:
                 super().__init__("imap.gmail.com")
                 handshake = True
@@ -19,21 +20,21 @@ class gmail(MailBox):
             except:
                 print("Handshake Failed")
  
-    def login (self):
+    def login(self):
         for login_attempt in range(4):
             try:
                 credentialsJSON = "credentialsGoogle.json"
                 with open(credentialsJSON) as handler:
                     credentials = json.load(handler)
-                super().login(credentials["user"],credentials["password"], initial_folder='Inbox')
+                super().login(credentials["user"], credentials["password"], initial_folder='Inbox')
                 self.loggedIn = True
-                del(credentials)
+                del credentials
                 print("Log in Succeed")
                 break
             except Exception as e:
                 print("Log in Failed due to ", e)
          
-    def logout (self):
+    def logout(self):
         try:
             self.close()
         except:
@@ -42,7 +43,7 @@ class gmail(MailBox):
             super().logout()
             self.loggedIn = False
     
-    def fetchMail(self,fetchFrom = "latest", fetchNumber = "ALL"):
+    def fetchMail(self, fetchFrom="latest", fetchNumber="ALL"):
         self.folder.set('Inbox')
         if fetchNumber == "ALL":
             nlimit = None
@@ -54,9 +55,6 @@ class gmail(MailBox):
             reversebool = False
 
         msglist = []
-        for msg in self.fetch(limit=nlimit,reverse=reversebool):
+        for msg in self.fetch(limit=nlimit, reverse=reversebool):
             msglist.append(msg)
         return msglist
-
-        
-
