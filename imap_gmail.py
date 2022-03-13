@@ -12,7 +12,7 @@ class gmail(MailBox):
  
     def connectToGmail(self):
         handshake = False
-        while handshake != True:
+        while not handshake:
             try:
                 super().__init__("imap.gmail.com")
                 handshake = True
@@ -21,7 +21,7 @@ class gmail(MailBox):
                 print("Handshake Failed")
  
     def login(self):
-        for login_attempt in range(4):
+        for login_attempt in range(3):
             try:
                 credentialsJSON = "credentialsGoogle.json"
                 with open(credentialsJSON) as handler:
