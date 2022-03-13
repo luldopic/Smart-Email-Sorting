@@ -8,35 +8,49 @@ import mysql.connector
 import json
 
 
-class myDB:
-    def __init__(self, database_name):
-        self.createDB(database_name)
+class emailDB:
+    def __init__(self):
+        self.connectDB()
+        self.cursor = self.db.cursor()
 
-    def createDB(self, database_name):
-        self.__connectToSQL__(database_name)
-        if self.db_exists != True:
-            cursor = self.db.cursor()
-            cursor.execute("CREATE DATABASE %s", database_name)
-        else:
-            pass
+    def connectDB(self):
+        try:
+            self.__connectToSQL__()
+        except UnknownDatabase:
+            self.__connectToSQL__(db_exist=False)
+            self.cursor = self.db.cursor()
+            self.cursor.execute("CREATE DATABASE GmailMail")
 
-    def createTable(self, table_name, table_columns):
-        pass
+    def createTable(self, table_name, table_columns=None):
+        try:
+            SQL = "CREATE TABLE {name} (id INT AUTO_INCREMENT PRIMARY KEY);".format(name = table_name)
+            self.cursor.execute(SQL)
+        except Exception as e:
+            print(e)
 
-    def __connectToSQL__(self, database_name):
+    def __connectToSQL__(self, db_exist=True):
         with open("MySQLcredentials.json") as handler:
             try:
                 credentials = json.load(handler)
-                self.db = mysql.connector.connect(host=credentials["host"], user=credentials["user"],
-                                                  password=credentials["password"], database=database_name)
-                del credentials
+                if db_exist:
+                    self.db = mysql.connector.connect(host=credentials["host"], user=credentials["user"],
+                                                      password=credentials["password"], database="GmailMail")
+                else:
+                    self.db = mysql.connector.connect(host=credentials["host"], user=credentials["user"],
+                                                      password=credentials["password"])
                 print("Successful Connection")
             except Exception as e:
                 error = str(e)
-                if error.__contains__("Unknown Database"):
-                    self.db_exists = False
+                if error.__contains__("Unknown database"):
+                    raise UnknownDatabase("Database cannot be found")
                 else:
                     print(e)
+            finally:
+                del credentials
 
 
-test = myDB("Gmail Mail")
+class UnknownDatabase(Exception):
+    pass
+
+class UnknownTable(Exception):
+    pass
