@@ -1,4 +1,4 @@
-# Connect to Gmail Inbox and Fetch Mail
+# Connect to Gmail Server and Fetch Mail
 
 
 from imap_tools import MailBox, AND, OR, NOT
