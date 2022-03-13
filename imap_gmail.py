@@ -20,16 +20,18 @@ class gmail(MailBox):
                 print("Handshake Failed")
  
     def login (self):
-        while self.loggedIn == False:
+        for login_attempt in range(4):
             try:
                 credentialsJSON = "credentialsGoogle.json"
                 with open(credentialsJSON) as handler:
                     credentials = json.load(handler)
-                super().login(credentials["user"],credentials["password"])
+                super().login(credentials["user"],credentials["password"], initial_folder='Inbox')
                 self.loggedIn = True
+                del(credentials)
                 print("Log in Succeed")
-            except:
-                print("Log in Failed")
+                break
+            except Exception as e:
+                print("Log in Failed due to ", e)
          
     def logout (self):
         try:
@@ -40,7 +42,21 @@ class gmail(MailBox):
             super().logout()
             self.loggedIn = False
     
-    def __get_mailfromInbox__(self):
+    def fetchMail(self,fetchFrom = "latest", fetchNumber = "ALL"):
         self.folder.set('Inbox')
+        if fetchNumber == "ALL":
+            nlimit = None
+        else:
+            nlimit = fetchNumber
+        if fetchFrom == "latest":
+            reversebool = True
+        else:
+            reversebool = False
+
+        msglist = []
+        for msg in self.fetch(limit=nlimit,reverse=reversebool):
+            msglist.append(msg)
+        return msglist
+
         
 
