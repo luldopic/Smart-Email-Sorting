@@ -36,7 +36,7 @@ class gmail(MailBox):
          
     def logout(self):
         try:
-            self.close()
+            super().close()
         except:
             pass
         finally:
