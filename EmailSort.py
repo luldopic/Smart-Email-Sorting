@@ -4,15 +4,15 @@ import imap_gmail
 
 
 class Mail:
-    def __init__(self, DB, msg):
-        self.uid = msg.uid
+    def __init__(self, msg):
+        self.uid = int(msg.uid)
         self.sender = msg.from_
         self.subject = msg.subject
-        self.date = msg.date
+        date = msg.date.strftime('%Y-%m-%d %H:%M:%S')
+        self.date = date
         self.text = msg.text
         [self.numberOfAttachments, self.AttachmentList] = self.getAttachments(msg)
-        dictEntry = self.createdict()
-        emailDB.addEntry(DB, "Email", dictEntry)
+        self.dictEntry = self.createdict()
 
     def createdict(self):
         dictEntry = {
@@ -21,7 +21,7 @@ class Mail:
             "subject": self.subject,
             "date": self.date,
             "text": self.text,
-            "numberOfAttachments": self.numberOfAttachments
+            #"numberOfAttachments": self.numberOfAttachments
         }
         return dictEntry
 
@@ -31,6 +31,16 @@ class Mail:
             attachmentList.append(att)
         return [len(attachmentList), attachmentList]
 
+    def addToDB(self, DB):
+        emailDB.addEntry(DB, "Email", self.dictEntry)
+
+    def __checkifAlreadyExisting__(self, DB):
+        SQL = "SELECT * FROM Email WHERE uid = {uid}".format(uid=self.uid)
+        res = emailDB.executeSQLCursor(SQL)
+        if len(res) != 0:
+            return True
+        else:
+            return False
 
 class Sorter:
     def __init__(self):
