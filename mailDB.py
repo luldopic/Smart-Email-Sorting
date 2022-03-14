@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Communicate with Local SQL Server to sort emails
+Communicate with Local SQL Server and Database
 
 @author: Ludo
 """
@@ -39,23 +39,35 @@ class emailDB:
             print(e)
 
     def addTableColumn(self, table_name, table_column):
-        SQL = """
-            IF NOT EXISTS
-            ( 
-                SELECT
-                    column_name
-                FROM
-                    INFORMATION.SCHEMA.COLUMNS
-                WHERE
-                    TABLE_NAME = '{name}'
-                    AND COLUMN_NAME = '{column_name}'
-            )
-                BEGIN
-                    ALTER TABLE {name} ADD ({column_name} {column_type})
-            END;                    
-            """.format(name=table_name, column_name=table_column[0], column_type=table_column[1])
+        try:
+            self.__checkColumnExist__(table_name, table_column[0])
+        except UnknownColumn:
+            SQL = "ALTER TABLE {name} ADD ({column_name} {column_type})".format(name=table_name,
+                                                                                column_name=table_column[0],
+                                                                                column_type=table_column[1])
+            self.executeSQLCursor(SQL)
+        except ColumnAlreadyCreated:
+            pass
 
+    """
+    Insert a new record into table such that columns don't have to be hard-coded.
+    As long as the entry is dictionary entry
+    """
+    def addEntry(self, table_name, entry):
+        columns = str(tuple(entry.keys())).replace("'", "")
+        values = str(tuple(entry.values()))
+        SQL = "INSERT INTO {table} {columns} VALUES {values}".format(table=table_name, columns=columns, values=values)
         self.executeSQLCursor(SQL)
+        self.db.commit()
+
+    def retrieveEntry(self, table_name, column_names=None):
+        if column_names is not None:
+            columns = str(column_names).replace("'", "")  # column: tuple
+            SQL = "SELECT {columns} FROM {table}".format(columns=columns, table=table_name)
+        else:
+            SQL = "SELECT * FROM {table}".format(table=table_name)
+        res = self.executeSQLCursor(SQL)
+        return res
 
     def executeSQLCursor(self, command):
         cursor = self.db.cursor()
@@ -72,6 +84,14 @@ class emailDB:
             raise UnknownTable("Table cannot be found")
         else:
             raise TableAlreadyCreated("Table already created")
+
+    def __checkColumnExist__(self, table_name, column_name):
+        SQL = "SHOW COLUMNS FROM {table} LIKE '{column}'".format(table=table_name, column=column_name)
+        res = self.executeSQLCursor(SQL)
+        if len(res) == 0:
+            raise UnknownColumn("Column cannot be found")
+        else:
+            raise ColumnAlreadyCreated("Column already created")
 
     def __connectToSQL__(self, db_exist=True):
         with open("MySQLcredentials.json") as handler:
@@ -94,12 +114,21 @@ class emailDB:
                 del credentials
 
 
+"""
+List of specific Errors 
+"""
+
 class UnknownDatabase(Exception):
     pass
-
 
 class UnknownTable(Exception):
     pass
 
 class TableAlreadyCreated(Exception):
+    pass
+
+class UnknownColumn(Exception):
+    pass
+
+class ColumnAlreadyCreated(Exception):
     pass
