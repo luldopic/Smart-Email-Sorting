@@ -43,7 +43,7 @@ class gmail(MailBox):
             super().logout()
             self.loggedIn = False
     
-    def fetchMail(self, fetchFrom="latest", fetchNumber="ALL"):
+    def fetchMail(self, fetchFrom="latest", fetchNumber="ALL",bulk=False):
         self.folder.set('Inbox')
         if fetchNumber == "ALL":
             nlimit = None
@@ -55,6 +55,6 @@ class gmail(MailBox):
             reversebool = False
 
         msglist = []
-        for msg in self.fetch(limit=nlimit, reverse=reversebool):
+        for msg in self.fetch(limit=nlimit, reverse=reversebool, bulk=bulk):
             msglist.append(msg)
         return msglist
