@@ -34,9 +34,15 @@ class emailDB:
     def showALLTable(self):
         try:
             SQL = "SHOW TABLES"
-            self.executeSQLCursor(SQL)
+            res = self.executeSQLCursor(SQL)
+            print(res)
         except Exception as e:
             print(e)
+
+    def showAllColumn(self, table_name):
+        SQL = "SHOW COLUMNS FROM {table}".format(table=table_name)
+        res = self.executeSQLCursor(SQL)
+        print(res)
 
     def addTableColumn(self, table_name, table_column):
         try:
