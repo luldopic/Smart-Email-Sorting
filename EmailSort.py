@@ -14,15 +14,20 @@ class Mail:
         [self.numberOfAttachments, self.AttachmentList] = self.getAttachments(msg)
         self.dictEntry = self.createdict()
 
-    def createdict(self):
+    def createdict(self, withText=False):
         dictEntry = {
             "uid": self.uid,
             "sender": self.sender,
             "subject": self.subject,
             "date": self.date,
             "text": self.text,
-            #"numberOfAttachments": self.numberOfAttachments
+            #"numberOfAttachments": self.numberOfAttachments,
+            "InputError": 0
         }
+        if not withText:
+            dictEntry.pop("text")
+        else:
+            pass
         return dictEntry
 
     def getAttachments(self,msg):
@@ -30,6 +35,7 @@ class Mail:
         for att in msg.attachments:
             attachmentList.append(att)
         return [len(attachmentList), attachmentList]
+
 
     def addToDB(self, DB):
         emailDB.addEntry(DB, "Email", self.dictEntry)
