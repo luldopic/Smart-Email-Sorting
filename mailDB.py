@@ -6,7 +6,7 @@ Communicate with Local SQL Server and Database
 """
 import mysql.connector
 import json
-
+import re
 
 class emailDB:
     def __init__(self):
@@ -61,8 +61,10 @@ class emailDB:
     """
     def addEntry(self, table_name, entry):
         columns = str(tuple(entry.keys())).replace("'", "")
-        values = str(tuple(entry.values()))
+        values = str(tuple(entry.values())).replace("\"", "'").replace("\\","")
         SQL = "INSERT INTO {table} {columns} VALUES {values}".format(table=table_name, columns=columns, values=values)
+        SQL.replace("\\","")
+
         self.executeSQLCursor(SQL)
         self.db.commit()
 
